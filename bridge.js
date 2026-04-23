@@ -1,56 +1,15 @@
 /**
- * CrossUI Studio Bridge - PHP Version
- * 
- * Functions:
- * 1. CORS Management
- * 2. Rate Limiting (Anti-Spam)
- * 3. Atomic VFS Write (IndexedDB)
- * 4. Protocol-safe Redirection
+ * CrossUI Studio Bridge - Node.js (Express) Version
  */
+const express = require('express');
+const router = express.Router();
 
-// 1. Professional Headers & Security
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, X-Requested-With');
-header('X-Content-Type-Options: nosniff');
-header('Content-Type: text/html; charset=utf-8');
+router.post('/bridge', (req, res) => {
+    const code = req.body.code || '';
+    const origin = req.body.origin || 'node_bridge';
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Max-Age: 86400');
-    exit;
-}
-
-// 2. Industrial Rate Limiting (File-based fallback)
-function enforceRateLimit() {
-    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-    $tmpDir = sys_get_temp_dir();
-    $limitFile = $tmpDir . '/cui_bridge_limit_' . md5($ip);
-    
-    $limit = 15;   // Max 15 snippets
-    $window = 60;  // Per 60 seconds
-    
-    $data = file_exists($limitFile) ? json_decode(file_get_contents($limitFile), true) : null;
-    
-    if ($data && (time() - $data['start']) < $window) {
-        if ($data['count'] >= $limit) {
-            http_response_code(429);
-            die("Rate limit exceeded. Please wait a minute.");
-        }
-        $data['count']++;
-    } else {
-        $data = ['start' => time(), 'count' => 1];
-    }
-    file_put_contents($limitFile, json_encode($data));
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    enforceRateLimit();
-}
-
-// 3. Payload Acquisition
-$code = $_POST['code'] ?? '';
-$origin = $_POST['origin'] ?? 'php_bridge';
-?>
+    // Standardized HTML Template for Cross-Platform Consistency
+    const html = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,14 +52,10 @@ $origin = $_POST['origin'] ?? 'php_bridge';
     </div>
 
     <script>
-        /**
-         * CrossUI VFS Injection Logic
-         * Synchronized across PHP, Node.js, Java, and C# implementations.
-         */
         (async () => {
-            // Secure injection of server-side variables
-            const snippetCode = <?php echo json_encode($code, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
-            const origin = <?php echo json_encode($origin, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
+            // Data passed from Node.js
+            const snippetCode = ${JSON.stringify(code)};
+            const origin = ${JSON.stringify(origin)};
             
             const SNIPPET_NAME = "[snippet].jsx";
             const PROJECT_ID = "playground";
@@ -127,7 +82,6 @@ $origin = $_POST['origin'] ?? 'php_bridge';
                 const transaction = db.transaction(["files"], "readwrite");
                 const store = transaction.objectStore("files");
 
-                // Industrial Schema for Studio Compatibility
                 const entry = {
                     id: ":virtual/" + PROJECT_ID + "/" + SNIPPET_NAME,
                     path: SNIPPET_NAME,
@@ -139,7 +93,7 @@ $origin = $_POST['origin'] ?? 'php_bridge';
                     }
                 };
 
-                const req = store.put(entry);
+                store.put(entry);
                 
                 transaction.oncomplete = () => {
                     window.location.href = STUDIO_URL;
@@ -157,4 +111,8 @@ $origin = $_POST['origin'] ?? 'php_bridge';
         })();
     </script>
 </body>
-</html>
+</html>`;
+    res.send(html);
+});
+
+module.exports = router;
