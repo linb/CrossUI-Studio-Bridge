@@ -20,7 +20,7 @@ public class BridgeController {
     public String handleBridge(
             @RequestParam(value = "code", defaultValue = "") String code,
             @RequestParam(value = "origin", defaultValue = "java_bridge") String origin) throws Exception {
-        
+
         String jsonCode = objectMapper.writeValueAsString(code);
         String jsonOrigin = objectMapper.writeValueAsString(origin);
 
@@ -52,10 +52,10 @@ public class BridgeController {
                 "            \n" +
                 "            const SNIPPET_NAME = \"[snippet].jsx\";\n" +
                 "            const PROJECT_ID = \"playground\";\n" +
-                "            const STUDIO_URL = \"https://studio.crossui.com#!\";\n" +
+                "            const STUDIO_URL = \"https://studio.crossui.com/app#!\";\n" +
                 "\n" +
                 "            if (!snippetCode || snippetCode.trim() === \"\") {\n" +
-                "                window.location.href = \"https://studio.crossui.com\";\n" +
+                "                window.location.href = \"https://studio.crossui.com/app\";\n" +
                 "                return;\n" +
                 "            }\n" +
                 "\n" +
@@ -99,7 +99,7 @@ public class BridgeController {
                 "\n" +
                 "            } catch (err) {\n" +
                 "                console.error(\"Critical Bridge Error:\", err);\n" +
-                "                window.location.href = \"https://studio.crossui.com\";\n" +
+                "                window.location.href = \"https://studio.crossui.com/app\";\n" +
                 "            }\n" +
                 "        })();\n" +
                 "    </script>\n" +

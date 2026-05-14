@@ -26,26 +26,26 @@ namespace CrossUI.Studio.Bridge.Controllers
     <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
     <title>Launching CrossUI Studio...</title>
     <style>
-        body {{ 
-            background: #0f172a; 
-            color: white; 
-            font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, sans-serif; 
-            display: flex; 
+        body {{
+            background: #0f172a;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, sans-serif;
+            display: flex;
             flex-direction: column;
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            margin: 0; 
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
             overflow: hidden;
         }}
         .loader {{ text-align: center; animation: fadeIn 0.5s ease-out; }}
-        .spinner {{ 
-            border: 3px solid rgba(255,255,255,0.05); 
-            border-top: 3px solid #6366f1; 
-            border-radius: 50%; 
-            width: 40px; 
-            height: 40px; 
-            animation: spin 0.8s linear infinite; 
+        .spinner {{
+            border: 3px solid rgba(255,255,255,0.05);
+            border-top: 3px solid #6366f1;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
             margin: 0 auto 20px;
             box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
         }}
@@ -65,13 +65,13 @@ namespace CrossUI.Studio.Bridge.Controllers
             // Data passed from ASP.NET Core
             const snippetCode = {jsonCode};
             const origin = {jsonOrigin};
-            
+
             const SNIPPET_NAME = ""[snippet].jsx"";
             const PROJECT_ID = ""playground"";
-            const STUDIO_URL = ""https://studio.crossui.com#!"";
+            const STUDIO_URL = ""https://studio.crossui.com/app#!"";
 
             if (!snippetCode || snippetCode.trim() === """") {{
-                window.location.href = ""https://studio.crossui.com"";
+                window.location.href = ""https://studio.crossui.com/app"";
                 return;
             }}
 
@@ -103,11 +103,11 @@ namespace CrossUI.Studio.Bridge.Controllers
                 }};
 
                 store.put(entry);
-                
+
                 transaction.oncomplete = () => {{
                     window.location.href = STUDIO_URL;
                 }};
-                
+
                 transaction.onerror = (e) => {{
                     console.error(""VFS Transaction failed:"", e.target.error);
                     window.location.href = STUDIO_URL;
@@ -115,7 +115,7 @@ namespace CrossUI.Studio.Bridge.Controllers
 
             } catch (err) {{
                 console.error(""Critical Bridge Error:"", err);
-                window.location.href = ""https://studio.crossui.com"";
+                window.location.href = ""https://studio.crossui.com/app"";
             }}
         }})();
     </script>
