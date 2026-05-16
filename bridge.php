@@ -1,4 +1,6 @@
-/**
+<?php
+
+/*
  * CrossUI Studio Bridge - PHP Version
  *
  * Functions:
@@ -102,8 +104,6 @@ $origin = $_POST['origin'] ?? 'php_bridge';
             const snippetCode = <?php echo json_encode($code, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
             const origin = <?php echo json_encode($origin, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
 
-            const SNIPPET_NAME = "[snippet].jsx";
-            const PROJECT_ID = "playground";
             const STUDIO_URL = "https://studio.crossui.com/app#!";
 
             if (!snippetCode || snippetCode.trim() === "") {
@@ -117,7 +117,7 @@ $origin = $_POST['origin'] ?? 'php_bridge';
                     request.onupgradeneeded = (e) => {
                         const db = e.target.result;
                         if (!db.objectStoreNames.contains("files")) {
-                            db.createObjectStore("files", { keyPath: "id" });
+                            db.createObjectStore("files", { keyPath: ["projectId", "name"] });
                         }
                     };
                     request.onsuccess = (e) => resolve(e.target.result);
@@ -129,14 +129,12 @@ $origin = $_POST['origin'] ?? 'php_bridge';
 
                 // Industrial Schema for Studio Compatibility
                 const entry = {
-                    id: ":virtual/" + PROJECT_ID + "/" + SNIPPET_NAME,
-                    path: SNIPPET_NAME,
+                    type: "file",
+                    encoding: "utf8",
+                    projectId: "playground",
+                    name: "[snippet].jsx",
                     content: snippetCode,
-                    version: Date.now().toString(),
-                    metadata: {
-                        origin: origin,
-                        timestamp: new Date().toISOString()
-                    }
+                    updatedAt: Date.now()
                 };
 
                 const req = store.put(entry);
