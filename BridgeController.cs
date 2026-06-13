@@ -106,7 +106,7 @@ namespace CrossUI.Studio.Bridge.Controllers
 
         // -- 5. Bridge Endpoint -----------------------------------------------
         [HttpPost]
-        public IActionResult Post([FromForm] string? code, [FromForm] string? origin)
+        public IActionResult Post([FromForm] string? code, [FromForm] string? origin, [FromForm] string? @ref)
         {
             ApplySecurityHeaders();
 
@@ -117,6 +117,7 @@ namespace CrossUI.Studio.Bridge.Controllers
 
             string snippetCodeJson = SafeJsonForScript(code ?? "");
             string originJson      = SafeJsonForScript(string.IsNullOrEmpty(origin) ? "csharp_bridge" : origin);
+            string refCodeJson     = SafeJsonForScript(@ref ?? "");
 
             string html = $@"<!DOCTYPE html>
 <html lang=""en"">
@@ -169,7 +170,11 @@ namespace CrossUI.Studio.Bridge.Controllers
             const snippetCode = {snippetCodeJson};
             const origin = {originJson};
 
-            const STUDIO_URL = ""https://studio.crossui.com/app#!"";
+            const refCode = {refCodeJson};
+            let STUDIO_URL = ""https://studio.crossui.com/app#!"";
+            if (refCode && refCode.trim() !== """") {{
+                STUDIO_URL = ""https://studio.crossui.com/app?ref="" + encodeURIComponent(refCode) + ""#!"";
+            }}
 
             if (!snippetCode || snippetCode.trim() === """") {{
                 window.location.href = ""https://studio.crossui.com/app"";

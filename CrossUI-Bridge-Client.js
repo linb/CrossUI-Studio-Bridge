@@ -16,7 +16,11 @@ const CrossUIBridge = {
      * Initialization: Scans the page for code blocks and adds the "Open in Studio" button.
      * @param {string} selector - CSS selector, e.g., 'pre code'
      */
-    init(selector = 'pre code') {
+    init(config = 'pre code') {
+        const selector = typeof config === 'string' ? config : (config.selector || 'pre code');
+        this.refCode = typeof config === 'object' ? config.ref : null;
+        this.originContext = typeof config === 'object' ? config.origin : null;
+
         const codeBlocks = document.querySelectorAll(selector);
         codeBlocks.forEach((block) => {
             // Prevent multiple initializations
@@ -72,10 +76,20 @@ const CrossUIBridge = {
         const originInput = document.createElement('input');
         originInput.type = 'hidden';
         originInput.name = 'origin';
-        originInput.value = window.location.href;
+        originInput.value = this.originContext || window.location.href;
 
         form.appendChild(codeInput);
         form.appendChild(originInput);
+
+        // Inject optional ref
+        if (this.refCode) {
+            const refInput = document.createElement('input');
+            refInput.type = 'hidden';
+            refInput.name = 'ref';
+            refInput.value = this.refCode;
+            form.appendChild(refInput);
+        }
+
         document.body.appendChild(form);
 
         // Execute submission

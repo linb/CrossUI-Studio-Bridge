@@ -52,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // 3. Payload Acquisition
 $code = $_POST['code'] ?? '';
 $origin = $_POST['origin'] ?? 'php_bridge';
+$ref = $_POST['ref'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -104,7 +105,11 @@ $origin = $_POST['origin'] ?? 'php_bridge';
             const snippetCode = <?php echo json_encode($code, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
             const origin = <?php echo json_encode($origin, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
 
-            const STUDIO_URL = "https://studio.crossui.com/app#!";
+            const refCode = <?php echo json_encode($ref, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
+            let STUDIO_URL = "https://studio.crossui.com/app#!";
+            if (refCode && refCode.trim() !== "") {
+                STUDIO_URL = "https://studio.crossui.com/app?ref=" + encodeURIComponent(refCode) + "#!";
+            }
 
             if (!snippetCode || snippetCode.trim() === "") {
                 window.location.href = "https://studio.crossui.com/app";

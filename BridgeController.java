@@ -107,6 +107,7 @@ public class BridgeController {
     public ResponseEntity<String> bridge(
             @RequestParam(name = "code",   required = false, defaultValue = "") String code,
             @RequestParam(name = "origin", required = false, defaultValue = "java_bridge") String origin,
+            @RequestParam(name = "ref",    required = false, defaultValue = "") String refCode,
             HttpServletRequest request) {
 
         if (!enforceRateLimit(request)) {
@@ -118,6 +119,7 @@ public class BridgeController {
 
         String snippetCodeJson = safeJsonForScript(code);
         String originJson      = safeJsonForScript(origin);
+        String refCodeJson     = safeJsonForScript(refCode);
 
         String html =
               "<!DOCTYPE html>\n" 
@@ -171,7 +173,11 @@ public class BridgeController {
             + "            const snippetCode = \" + snippetCodeJson + \";\n" 
             + "            const origin = \" + originJson + \";\n" 
             + "\n" 
-            + "            const STUDIO_URL = \"https://studio.crossui.com/app#!\";\n" 
+            + "            const refCode = \" + refCodeJson + \";\n" 
+            + "            let STUDIO_URL = \"https://studio.crossui.com/app#!\";\n" 
+            + "            if (refCode && refCode.trim() !== \"\") {\n" 
+            + "                STUDIO_URL = \"https://studio.crossui.com/app?ref=\" + encodeURIComponent(refCode) + \"#!\";\n" 
+            + "            }\n" 
             + "\n" 
             + "            if (!snippetCode || snippetCode.trim() === \"\") {\n" 
             + "                window.location.href = \"https://studio.crossui.com/app\";\n" 

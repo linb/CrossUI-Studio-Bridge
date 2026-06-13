@@ -87,9 +87,11 @@ router.post('/bridge', (req, res) => {
 
     const code = (req.body && req.body.code) || '';
     const origin = (req.body && req.body.origin) || 'node_bridge';
+    const refCode = (req.body && req.body.ref) || '';
 
     const snippetCodeJson = safeJsonForScript(code);
     const originJson = safeJsonForScript(origin);
+    const refCodeJson = safeJsonForScript(refCode);
 
     // Standardized HTML Template for Cross-Platform Consistency
     const html = `<!DOCTYPE html>
@@ -143,7 +145,11 @@ router.post('/bridge', (req, res) => {
             const snippetCode = ${snippetCodeJson};
             const origin = ${originJson};
 
-            const STUDIO_URL = "https://studio.crossui.com/app#!";
+            const refCode = ${refCodeJson};
+            let STUDIO_URL = "https://studio.crossui.com/app#!";
+            if (refCode && refCode.trim() !== "") {
+                STUDIO_URL = "https://studio.crossui.com/app?ref=" + encodeURIComponent(refCode) + "#!";
+            }
 
             if (!snippetCode || snippetCode.trim() === "") {
                 window.location.href = "https://studio.crossui.com/app";

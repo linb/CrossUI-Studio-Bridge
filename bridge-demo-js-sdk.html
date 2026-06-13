@@ -126,7 +126,11 @@ export const ManualSnippet = () => (
             // Note: The script already does a global init() on DOMContentLoaded,
             // but we can call it again for specific selectors if needed.
             setTimeout(() => {
-                CrossUIBridge.init('.manual-code');
+                CrossUIBridge.init({
+                    selector: '.manual-code',
+                   // ref: 'demo_partner_123',
+                   // origin: 'js_sdk_demo'
+                });
             }, 500);
         </script>
     </div>
